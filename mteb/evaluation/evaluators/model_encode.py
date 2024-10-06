@@ -36,6 +36,7 @@ def model_encode(
     # 3. Composed prompt of task type + prompt type
     # 4. Specific task type prompt
     # 5. Specific prompt type
+    print(f"{task_name=} {task_type=} {prompt_type=}")
 
     if hasattr(model, "prompts"):
         # check if prompts is an empty dict
