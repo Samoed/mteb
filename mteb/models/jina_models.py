@@ -1,23 +1,41 @@
 from __future__ import annotations
 
 from functools import partial
+from typing import Any
 
-from mteb.model_meta import ModelMeta, sentence_transformers_loader
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import __version__ as st_version
+
+from mteb.model_meta import ModelMeta
+
+MIN_SENTENCE_TRANSFORMERS_VERSION = (3, 1, 0)
+CURRENT_SENTENCE_TRANSFORMERS_VERSION = tuple(map(int, st_version.split(".")))
 
 
 class JinaWrapper:
     """following the hf model card documentation."""
+
     # todo install einops, sbert > 3.1.0
     original_prompts = {
-        "retrieval.query":"Represent the query for retrieving evidence documents: ",
-        "retrieval.passage":"Represent the document for retrieval: ",
+        "retrieval.query": "Represent the query for retrieving evidence documents: ",
+        "retrieval.passage": "Represent the document for retrieval: ",
         "separation": "",
         "classification": "",
-        "text-matching": ""
+        "text-matching": "",
     }
 
     def __init__(self, model_name: str, revision: str, **kwargs: Any):
+        if CURRENT_SENTENCE_TRANSFORMERS_VERSION < MIN_SENTENCE_TRANSFORMERS_VERSION:
+            raise RuntimeError(
+                f"sentence_transformers version {st_version} is lower than the required version 3.1.0"
+            )
+        try:
+            import einops  # noqa: F401
+        except ImportError:
+            raise ImportError(
+                "To use the jina-embeddings-v3 models `einops` is required. Please install it with `pip install einops`."
+            )
+        from sentence_transformers import SentenceTransformer
+
         self.model_name = model_name
         self.model = SentenceTransformer(model_name, revision=revision, **kwargs)
         self.prompts = self.model.prompts
@@ -39,7 +57,7 @@ class JinaWrapper:
             batch_size=batch_size,
             task=task,  # special jina parameter
             prompt=prompt,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -57,8 +75,8 @@ jina_emdeddings_v3 = ModelMeta(
             "STS": "text-matching",
             "PairClassification": "text-matching",
             "BitextMining": "text-matching",
-            "MultiLabelClassification": "classification",
-            "Reranking": "separation", # todo test
+            "MultilabelClassification": "classification",
+            "Reranking": "separation",
             "Summarization": "text-matching",
         },
     ),

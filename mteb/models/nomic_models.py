@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from sentence_transformers import SentenceTransformer
 
 import mteb
-from mteb.model_meta import ModelMeta
+from mteb.model_meta import ModelMeta, sentence_transformers_loader
 from mteb.models.text_formatting_utils import corpus_to_texts
 
 
@@ -110,6 +110,20 @@ nomic_embed_v1 = ModelMeta(
     open_source=True,
     revision="0759316f275aa0cb93a5b830973843ca66babcf5",
     release_date="2024-01-31",  # first commit
+)
+
+cde_small = ModelMeta(
+    loader=partial(
+        sentence_transformers_loader,
+        model_name="jxm/cde-small-v1",
+        revision="10f081914816933d06b18c414c3484c96de49cdb",
+        prompts={"query": "search_query: ", "passage": "search_document: "},
+    ),
+    name="jxm/cde-small-v1",
+    languages=["eng_Latn"],
+    open_source=True,
+    revision="10f081914816933d06b18c414c3484c96de49cdb",
+    release_date="2024-10-03",
 )
 
 if __name__ == "__main__":

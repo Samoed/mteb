@@ -36,7 +36,6 @@ def model_encode(
     # 3. Composed prompt of task type + prompt type
     # 4. Specific task type prompt
     # 5. Specific prompt type
-    print(f"{task_name=} {task_type=} {prompt_type=}")
 
     if hasattr(model, "prompts"):
         # check if prompts is an empty dict
@@ -67,6 +66,9 @@ def model_encode(
     else:
         kwargs["prompt_name"] = task_name
 
+    logger.info(
+        f"Using {kwargs.get('prompt_name', None)} prompt name for task={task_name} task_type={task_type} prompt_type={prompt_type}"
+    )
     logger.info(f"Encoding {len(sentences)} sentences.")
 
     embeddings = model.encode(sentences, **kwargs)

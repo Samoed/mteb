@@ -16,6 +16,7 @@ from mteb.models import (
     google_models,
     gritlm_models,
     gte_models,
+    jina_models,
     llm2vec_models,
     mxbai_models,
     nomic_models,
@@ -25,8 +26,9 @@ from mteb.models import (
     ru_sentence_models,
     salesforce_models,
     sentence_transformers_models,
+    stella_models,
+    uae_models,
     voyage_models,
-    jina_models,
 )
 
 logger = logging.getLogger(__name__)
@@ -154,6 +156,8 @@ model_modules = [
     voyage_models,
     google_models,
     jina_models,
+    stella_models,
+    uae_models,
 ]
 models = {}
 
