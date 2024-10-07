@@ -25,18 +25,13 @@ class UAEWrapper:
         input_type: str | None = None,
         **kwargs: Any,
     ):
-        task = self.prompts.get(prompt_name, "")
-        prompt = self.original_prompts.get(task, "")
-
-        if prompt_name in self.model.prompts:
+        if prompt_name and prompt_name in self.model.prompts:
             prompt = self.model.prompts[prompt_name]
-            sentences = [sentence.format(text=sentence) for sentence in sentences]
+            sentences = [prompt.format(text=sentence) for sentence in sentences]
 
         return self.model.encode(
             sentences,
             batch_size=batch_size,
-            task=task,  # special jina parameter
-            prompt=prompt,
             **kwargs,
         )
 
