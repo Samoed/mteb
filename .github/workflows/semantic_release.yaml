@@ -2,7 +2,7 @@ name: Version & Release on Commit Prefix
 on:
   push:
     branches:
-      - main
+      - test_ci
 
 jobs:
   bump_and_release:
