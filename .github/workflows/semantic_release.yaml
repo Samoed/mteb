@@ -70,13 +70,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          git add pyproject.toml
+          git commit -m "chore: bump version to ${{ steps.version_bump.outputs.new_version }}" || echo "No changes to commit."
+
           # make sure we are up to date with main
           git fetch origin main
           # pulling main, because clone by ref
           git rebase origin/main || git pull --rebase origin main
-
-          git add pyproject.toml
-          git commit -m "chore: bump version to ${{ steps.version_bump.outputs.new_version }}" || echo "No changes to commit."
 
           tag="v${{ steps.version_bump.outputs.new_version }}"
           git tag "$tag"
