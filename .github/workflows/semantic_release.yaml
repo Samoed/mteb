@@ -11,8 +11,8 @@ jobs:
     environment:
       name: pypi
     permissions:
-      id-token: write # IMPORTANT: this permission is mandatory for trusted publishing using PyPI
-      contents: read
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing using PyPI
+      contents: write  # for updating pyproject
 
     steps:
       - name: Checkout code
