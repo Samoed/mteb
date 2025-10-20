@@ -7,8 +7,13 @@ on:
 jobs:
   bump_and_release:
     runs-on: ubuntu-latest
+    concurrency: release
+    environment:
+      name: pypi
     permissions:
-      contents: write   # required for pushing tags and creating releases
+      id-token: write # IMPORTANT: this permission is mandatory for trusted publishing using PyPI
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -94,3 +99,25 @@ jobs:
           tag="v${{ steps.version_bump.outputs.new_version }}"
           echo "Creating release for tag $tag"
           gh release create "$tag" --generate-notes --repo "${{ github.repository }}"
+
+      - name: Build
+        run: uv build
+
+      # Check that basic features work and we didn't miss to include crucial files
+      - name: Smoke test (wheel)
+        run: uv run --isolated --no-project --with dist/*.whl python -c "import mteb"
+      - name: Smoke test (source distribution)
+        run: uv run --isolated --no-project --with dist/*.tar.gz python -c "import mteb"
+
+      - name: Publish
+        run: uv publish
+      - name: Upload artifacts to Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        # Upload to GitHub Release using the `gh` CLI.
+        # `dist/` contains the built packages, and the
+        # sigstore-produced signatures and certificates.
+        run: >-
+          gh release upload
+          '${{ github.ref_name }}' dist/**
+          --repo '${{ github.repository }}'
