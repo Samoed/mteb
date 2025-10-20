@@ -106,6 +106,7 @@ jobs:
 
       - name: Publish
         run: uv publish
+
       - name: Upload artifacts to Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
